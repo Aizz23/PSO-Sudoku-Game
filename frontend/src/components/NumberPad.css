@@ -1,0 +1,66 @@
+.number-pad {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  max-width: 500px;
+  width: 100%;
+  margin: 20px auto;
+}
+
+.number-button {
+  padding: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  border: 2px solid #3498db;
+  background-color: white;
+  color: #3498db;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.number-button:hover {
+  background-color: #3498db;
+  color: white;
+  transform: scale(1.05);
+}
+
+.number-button.selected {
+  background-color: #3498db;
+  color: white;
+}
+
+.erase-button {
+  grid-column: span 2;
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+.erase-button:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .number-pad {
+    max-width: 350px;
+    gap: 8px;
+  }
+  
+  .number-button {
+    padding: 12px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .number-pad {
+    max-width: 300px;
+    gap: 5px;
+  }
+  
+  .number-button {
+    padding: 10px;
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,40 @@
+# For Azure deployment with Cosmos DB
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sudoku-backend-prod
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGODB_URI: ${AZURE_COSMOS_CONNECTION_STRING}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRE: 7d
+      CORS_ORIGIN: ${FRONTEND_URL}
+    networks:
+      - sudoku-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sudoku-frontend-prod
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      REACT_APP_API_URL: ${BACKEND_URL}/api
+    depends_on:
+      - backend
+    networks:
+      - sudoku-network
+
+networks:
+  sudoku-network:
+    driver: bridge

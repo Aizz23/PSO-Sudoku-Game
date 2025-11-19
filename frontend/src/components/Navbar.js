@@ -1,0 +1,39 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './Navbar.css';
+
+const Navbar = ({ user, onLogout }) => {
+  return (
+    <nav className="navbar">
+      <div className="container navbar-container">
+        <Link to="/" className="navbar-brand">
+          🎮 Sudoku Game
+        </Link>
+        
+        <div className="navbar-menu">
+          <Link to="/" className="navbar-link">Home</Link>
+          <Link to="/game" className="navbar-link">Play</Link>
+          <Link to="/leaderboard" className="navbar-link">Leaderboard</Link>
+          
+          {user ? (
+            <>
+              <Link to="/profile" className="navbar-link">Profile</Link>
+              <button onClick={onLogout} className="btn btn-danger btn-sm">
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="navbar-link">Login</Link>
+              <Link to="/register" className="btn btn-primary btn-sm">
+                Register
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;

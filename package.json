@@ -1,0 +1,40 @@
+{
+  "name": "sudoku-game",
+  "version": "1.0.0",
+  "description": "Full-stack Sudoku game with React, Node.js, and MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "install-backend": "cd backend && npm install",
+    "install-frontend": "cd frontend && npm install",
+    "install-all": "npm run install-backend && npm run install-frontend",
+    "dev-backend": "cd backend && npm run dev",
+    "dev-frontend": "cd frontend && npm start",
+    "build-backend": "cd backend && npm install --production",
+    "build-frontend": "cd frontend && npm run build",
+    "build-all": "npm run build-backend && npm run build-frontend",
+    "docker-dev": "docker-compose up",
+    "docker-prod": "docker-compose -f docker-compose.prod.yml up -d",
+    "docker-down": "docker-compose down",
+    "docker-clean": "docker-compose down -v && docker system prune -f"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aizz23/PSO-Sudoku-Game.git"
+  },
+  "keywords": [
+    "sudoku",
+    "game",
+    "react",
+    "nodejs",
+    "mongodb",
+    "docker",
+    "azure",
+    "ci-cd"
+  ],
+  "author": "Aizz23",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Aizz23/PSO-Sudoku-Game/issues"
+  },
+  "homepage": "https://github.com/Aizz23/PSO-Sudoku-Game#readme"
+}
