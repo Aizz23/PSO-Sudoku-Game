@@ -78,7 +78,7 @@ router.get('/:id', async (req, res) => {
  */
 router.put('/:id', async (req, res) => {
   try {
-    const { currentState, status, timeElapsed, mistakes, hintsUsed } = req.body;
+    const { currentState, status, timeElapsed, hintsUsed } = req.body;
 
     const game = await Game.findById(req.params.id);
 
@@ -97,24 +97,9 @@ router.put('/:id', async (req, res) => {
       }
     }
     if (timeElapsed !== undefined) game.timeElapsed = timeElapsed;
-    if (mistakes !== undefined) game.mistakes = mistakes;
     if (hintsUsed !== undefined) game.hintsUsed = hintsUsed;
 
     await game.save();
-
-    // Update user stats if game is completed
-    if (status === 'completed' && game.user) {
-      const user = await User.findById(game.user);
-      if (user) {
-        user.gamesPlayed += 1;
-        user.gamesWon += 1;
-        user.totalScore += game.score;
-        if (!user.bestTime || game.timeElapsed < user.bestTime) {
-          user.bestTime = game.timeElapsed;
-        }
-        await user.save();
-      }
-    }
 
     res.status(200).json({
       success: true,

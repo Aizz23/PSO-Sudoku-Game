@@ -48,18 +48,6 @@ const Home = () => {
               <h3>Leaderboard</h3>
               <p>Compete with other players and climb the rankings</p>
             </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon">✅</div>
-              <h3>Real-time Validation</h3>
-              <p>Get instant feedback on your moves</p>
-            </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon">📊</div>
-              <h3>Track Statistics</h3>
-              <p>View your game history and performance stats</p>
-            </div>
           </div>
         </div>
 

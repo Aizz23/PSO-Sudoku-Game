@@ -54,10 +54,7 @@ router.post('/register', [
       data: {
         id: user._id,
         username: user.username,
-        email: user.email,
-        gamesPlayed: user.gamesPlayed,
-        gamesWon: user.gamesWon,
-        totalScore: user.totalScore
+        email: user.email
       }
     });
   } catch (error) {
@@ -120,11 +117,7 @@ router.post('/login', [
       data: {
         id: user._id,
         username: user.username,
-        email: user.email,
-        gamesPlayed: user.gamesPlayed,
-        gamesWon: user.gamesWon,
-        totalScore: user.totalScore,
-        bestTime: user.bestTime
+        email: user.email
       }
     });
   } catch (error) {
@@ -158,10 +151,6 @@ router.get('/user/:id', async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        gamesPlayed: user.gamesPlayed,
-        gamesWon: user.gamesWon,
-        totalScore: user.totalScore,
-        bestTime: user.bestTime,
         createdAt: user.createdAt
       }
     });

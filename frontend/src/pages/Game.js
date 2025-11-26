@@ -15,7 +15,6 @@ const Game = ({ user }) => {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameId, setGameId] = useState(null);
   const [timer, setTimer] = useState(0);
-  const [mistakes, setMistakes] = useState(0);
   const [hintsUsed, setHintsUsed] = useState(0);
   const [loading, setLoading] = useState(false);
   const [gameCompleted, setGameCompleted] = useState(false);
@@ -48,7 +47,6 @@ const Game = ({ user }) => {
       setCurrentState(newPuzzle.map(row => [...row]));
       setGameStarted(true);
       setTimer(0);
-      setMistakes(0);
       setHintsUsed(0);
       setGameCompleted(false);
       setSelectedCell(null);
@@ -89,12 +87,6 @@ const Game = ({ user }) => {
         newState[row][col] = num.toString();
         setCurrentState(newState);
 
-        // Check if it's correct
-        if (solution[row][col] !== num.toString()) {
-          setMistakes(mistakes + 1);
-          toast.error('Wrong number! Try again.');
-        }
-
         // Check if puzzle is complete
         checkCompletion(newState);
       }
@@ -134,7 +126,6 @@ const Game = ({ user }) => {
         currentState,
         status: 'completed',
         timeElapsed: timer,
-        mistakes,
         hintsUsed,
       });
 
@@ -177,7 +168,6 @@ const Game = ({ user }) => {
     if (puzzle) {
       setCurrentState(puzzle.map(row => [...row]));
       setTimer(0);
-      setMistakes(0);
       setHintsUsed(0);
       setGameCompleted(false);
       setSelectedCell(null);
@@ -249,10 +239,6 @@ const Game = ({ user }) => {
                 </div>
               </div>
               <div className="stat-card">
-                <div className="stat-label">Mistakes</div>
-                <div className="stat-value">❌ {mistakes}</div>
-              </div>
-              <div className="stat-card">
                 <div className="stat-label">Hints Used</div>
                 <div className="stat-value">💡 {hintsUsed}/3</div>
               </div>
@@ -264,7 +250,6 @@ const Game = ({ user }) => {
               solution={solution}
               selectedCell={selectedCell}
               onCellClick={handleCellClick}
-              mistakes={mistakes}
             />
 
             <NumberPad
@@ -292,7 +277,6 @@ const Game = ({ user }) => {
             <p>You completed the puzzle!</p>
             <div className="completion-stats">
               <p>Time: {formatTime(timer)}</p>
-              <p>Mistakes: {mistakes}</p>
               <p>Hints Used: {hintsUsed}</p>
             </div>
             <button className="btn btn-primary btn-large" onClick={startNewGame}>

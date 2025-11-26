@@ -7,8 +7,7 @@ const SudokuBoard = ({
   solution, 
   selectedCell, 
   onCellClick, 
-  onCellChange,
-  mistakes 
+  onCellChange
 }) => {
   
   const getCellClassName = (row, col) => {
@@ -40,13 +39,6 @@ const SudokuBoard = ({
       }
     }
     
-    // Wrong answer
-    if (currentState[row][col] !== '-' && 
-        currentState[row][col] !== '0' && 
-        currentState[row][col] !== solution[row][col]) {
-      classes.push('cell-wrong');
-    }
-    
     // Border classes for 3x3 boxes
     if (row === 2 || row === 5) classes.push('border-bottom-thick');
     if (col === 2 || col === 5) classes.push('border-right-thick');
@@ -75,12 +67,6 @@ const SudokuBoard = ({
           ))
         ))}
       </div>
-      
-      {mistakes > 0 && (
-        <div className="mistakes-indicator">
-          ❌ Mistakes: {mistakes}
-        </div>
-      )}
     </div>
   );
 };
