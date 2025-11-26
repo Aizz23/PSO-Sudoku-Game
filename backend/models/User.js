@@ -26,22 +26,6 @@ const UserSchema = new mongoose.Schema({
     minlength: [6, 'Password must be at least 6 characters'],
     select: false
   },
-  gamesPlayed: {
-    type: Number,
-    default: 0
-  },
-  gamesWon: {
-    type: Number,
-    default: 0
-  },
-  bestTime: {
-    type: Number,
-    default: null
-  },
-  totalScore: {
-    type: Number,
-    default: 0
-  },
   createdAt: {
     type: Date,
     default: Date.now

@@ -43,10 +43,6 @@ const GameSchema = new mongoose.Schema({
     type: Number, // in seconds
     default: 0
   },
-  mistakes: {
-    type: Number,
-    default: 0
-  },
   hintsUsed: {
     type: Number,
     default: 0
@@ -64,13 +60,12 @@ const GameSchema = new mongoose.Schema({
 // Calculate score before saving
 GameSchema.pre('save', function(next) {
   if (this.status === 'completed') {
-    // Score formula: base points - time penalty - mistake penalty - hint penalty
+    // Score formula: base points - time penalty - hint penalty
     const basePoints = 1000;
     const timePenalty = Math.floor(this.timeElapsed / 10);
-    const mistakePenalty = this.mistakes * 50;
     const hintPenalty = this.hintsUsed * 20;
     
-    this.score = Math.max(0, basePoints - timePenalty - mistakePenalty - hintPenalty);
+    this.score = Math.max(0, basePoints - timePenalty - hintPenalty);
   }
   next();
 });
