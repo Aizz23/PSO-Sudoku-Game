@@ -1,0 +1,121 @@
+name: Build and Push Multi-Container App to ACR
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  AZURE_REGISTRY_LOGIN_SERVER: sudokustrupwa.azurecr.io
+  AZURE_RESOURCE_GROUP: sudoku-rg
+  BACKEND_IMAGE_NAME: sudoku-backend
+  FRONTEND_IMAGE_NAME: sudoku-frontend
+  
+jobs:
+  build-backend:
+    name: Build and Push Backend
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: 🔧 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: 🔐 Log in to Azure Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+    
+    - name: 🏗️ Build and push Backend Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        tags: |
+          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }}
+          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+        cache-from: type=gha,scope=backend
+        cache-to: type=gha,mode=max,scope=backend
+    
+    - name: 📋 Backend Image Info
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        echo "✅ Backend image pushed successfully!"
+        echo "📦 Tags:"
+        echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github. sha }}"
+        echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest"
+
+  build-frontend:
+    name: Build and Push Frontend
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: 🔧 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: 🔐 Log in to Azure Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+    
+    - name: 🏗️ Build and push Frontend Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./frontend
+        push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        tags: |
+          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }}
+          ${{ env. AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
+        cache-from: type=gha,scope=frontend
+        cache-to: type=gha,mode=max,scope=frontend
+    
+    - name: 📋 Frontend Image Info
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        echo "✅ Frontend image pushed successfully!"
+        echo "📦 Tags:"
+        echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }}"
+        echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env. FRONTEND_IMAGE_NAME }}:latest"
+
+  deployment-instructions:
+    name: Deployment Instructions
+    needs: [build-backend, build-frontend]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📝 Show Deployment Commands
+      run: |
+        echo "🎉 Both images built and pushed successfully!"
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🚀 TO DEPLOY, RUN THESE COMMANDS:"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
+        echo "# Deploy Backend:"
+        echo "az containerapp update \\"
+        echo "  --name ${{ secrets.AZURE_CONTAINER_APP_BACKEND }} \\"
+        echo "  --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \\"
+        echo "  --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest"
+        echo ""
+        echo "# Deploy Frontend:"
+        echo "az containerapp update \\"
+        echo "  --name ${{ secrets.AZURE_CONTAINER_APP_FRONTEND }} \\"
+        echo "  --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \\"
+        echo "  --image ${{ env. AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
+        echo ""
+        echo "# Or use the deployment script:"
+        echo "./deploy-all.sh"
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
