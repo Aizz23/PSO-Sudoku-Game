@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
@@ -43,7 +43,10 @@ function App() {
         
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/game" element={<Game user={user} />} />
+          <Route 
+            path="/game" 
+            element={user ? <Game user={user} /> : <Navigate to="/login" />} 
+          />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route 
             path="/login" 
