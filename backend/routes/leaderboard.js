@@ -26,13 +26,13 @@ router.get('/top-scores', async (req, res) => {
     res.status(200).json({
       success: true,
       count: topGames.length,
-      data: topGames
+      data: topGames,
     });
   } catch (error) {
     console.error('Error fetching leaderboard:', error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching leaderboard'
+      message: 'Error fetching leaderboard',
     });
   }
 });
@@ -60,13 +60,13 @@ router.get('/fastest-times', async (req, res) => {
     res.status(200).json({
       success: true,
       count: fastestGames.length,
-      data: fastestGames
+      data: fastestGames,
     });
   } catch (error) {
     console.error('Error fetching fastest times:', error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching fastest times'
+      message: 'Error fetching fastest times',
     });
   }
 });
@@ -88,13 +88,13 @@ router.get('/top-players', async (req, res) => {
     res.status(200).json({
       success: true,
       count: topPlayers.length,
-      data: topPlayers
+      data: topPlayers,
     });
   } catch (error) {
     console.error('Error fetching top players:', error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching top players'
+      message: 'Error fetching top players',
     });
   }
 });
@@ -112,11 +112,11 @@ router.get('/stats', async (req, res) => {
 
     const avgTimeResult = await Game.aggregate([
       { $match: { status: 'completed' } },
-      { $group: { _id: null, avgTime: { $avg: '$timeElapsed' } } }
+      { $group: { _id: null, avgTime: { $avg: '$timeElapsed' } } },
     ]);
 
     const gamesByDifficulty = await Game.aggregate([
-      { $group: { _id: '$difficulty', count: { $sum: 1 } } }
+      { $group: { _id: '$difficulty', count: { $sum: 1 } } },
     ]);
 
     res.status(200).json({
@@ -126,14 +126,14 @@ router.get('/stats', async (req, res) => {
         completedGames,
         totalUsers,
         averageCompletionTime: avgTimeResult[0]?.avgTime || 0,
-        gamesByDifficulty
-      }
+        gamesByDifficulty,
+      },
     });
   } catch (error) {
     console.error('Error fetching stats:', error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching statistics'
+      message: 'Error fetching statistics',
     });
   }
 });

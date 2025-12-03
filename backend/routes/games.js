@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
     if (!puzzle || !solution || !difficulty) {
       return res.status(400).json({
         success: false,
-        message: 'Puzzle, solution, and difficulty are required'
+        message: 'Puzzle, solution, and difficulty are required',
       });
     }
 
@@ -26,18 +26,18 @@ router.post('/', async (req, res) => {
       solution,
       currentState: puzzle,
       difficulty,
-      status: 'in-progress'
+      status: 'in-progress',
     });
 
     res.status(201).json({
       success: true,
-      data: game
+      data: game,
     });
   } catch (error) {
     console.error('Error creating game:', error);
     res.status(500).json({
       success: false,
-      message: 'Error creating game'
+      message: 'Error creating game',
     });
   }
 });
@@ -49,24 +49,27 @@ router.post('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
   try {
-    const game = await Game.findById(req.params.id).populate('user', 'username');
+    const game = await Game.findById(req.params.id).populate(
+      'user',
+      'username'
+    );
 
     if (!game) {
       return res.status(404).json({
         success: false,
-        message: 'Game not found'
+        message: 'Game not found',
       });
     }
 
     res.status(200).json({
       success: true,
-      data: game
+      data: game,
     });
   } catch (error) {
     console.error('Error fetching game:', error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching game'
+      message: 'Error fetching game',
     });
   }
 });
@@ -85,7 +88,7 @@ router.put('/:id', async (req, res) => {
     if (!game) {
       return res.status(404).json({
         success: false,
-        message: 'Game not found'
+        message: 'Game not found',
       });
     }
 
@@ -103,13 +106,13 @@ router.put('/:id', async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: game
+      data: game,
     });
   } catch (error) {
     console.error('Error updating game:', error);
     res.status(500).json({
       success: false,
-      message: 'Error updating game'
+      message: 'Error updating game',
     });
   }
 });
@@ -128,13 +131,13 @@ router.get('/user/:userId', async (req, res) => {
     res.status(200).json({
       success: true,
       count: games.length,
-      data: games
+      data: games,
     });
   } catch (error) {
     console.error('Error fetching user games:', error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching user games'
+      message: 'Error fetching user games',
     });
   }
 });
@@ -151,7 +154,7 @@ router.delete('/:id', async (req, res) => {
     if (!game) {
       return res.status(404).json({
         success: false,
-        message: 'Game not found'
+        message: 'Game not found',
       });
     }
 
@@ -159,13 +162,13 @@ router.delete('/:id', async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Game deleted successfully'
+      message: 'Game deleted successfully',
     });
   } catch (error) {
     console.error('Error deleting game:', error);
     res.status(500).json({
       success: false,
-      message: 'Error deleting game'
+      message: 'Error deleting game',
     });
   }
 });

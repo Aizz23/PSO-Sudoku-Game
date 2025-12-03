@@ -10,11 +10,12 @@ const sudokuGenerator = require('../utils/sudokuGenerator');
 router.get('/generate', async (req, res) => {
   try {
     const { difficulty = 'medium' } = req.query;
-    
+
     if (!['easy', 'medium', 'hard', 'expert'].includes(difficulty)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid difficulty level. Choose: easy, medium, hard, or expert'
+        message:
+          'Invalid difficulty level. Choose: easy, medium, hard, or expert',
       });
     }
 
@@ -22,13 +23,13 @@ router.get('/generate', async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: puzzleData
+      data: puzzleData,
     });
   } catch (error) {
     console.error('Error generating puzzle:', error);
     res.status(500).json({
       success: false,
-      message: 'Error generating puzzle'
+      message: 'Error generating puzzle',
     });
   }
 });
@@ -45,7 +46,7 @@ router.post('/validate', async (req, res) => {
     if (!board || !Array.isArray(board) || board.length !== 9) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid board format'
+        message: 'Invalid board format',
       });
     }
 
@@ -55,14 +56,14 @@ router.post('/validate', async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        isValid
-      }
+        isValid,
+      },
     });
   } catch (error) {
     console.error('Error validating puzzle:', error);
     res.status(500).json({
       success: false,
-      message: 'Error validating puzzle'
+      message: 'Error validating puzzle',
     });
   }
 });
@@ -79,7 +80,7 @@ router.post('/solve', async (req, res) => {
     if (!board || !Array.isArray(board) || board.length !== 9) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid board format'
+        message: 'Invalid board format',
       });
     }
 
@@ -89,21 +90,21 @@ router.post('/solve', async (req, res) => {
     if (!solution) {
       return res.status(400).json({
         success: false,
-        message: 'Puzzle cannot be solved'
+        message: 'Puzzle cannot be solved',
       });
     }
 
     res.status(200).json({
       success: true,
       data: {
-        solution: sudokuGenerator.boardToString(solution)
-      }
+        solution: sudokuGenerator.boardToString(solution),
+      },
     });
   } catch (error) {
     console.error('Error solving puzzle:', error);
     res.status(500).json({
       success: false,
-      message: 'Error solving puzzle'
+      message: 'Error solving puzzle',
     });
   }
 });
@@ -120,7 +121,7 @@ router.post('/hint', async (req, res) => {
     if (!puzzle || !solution) {
       return res.status(400).json({
         success: false,
-        message: 'Puzzle and solution are required'
+        message: 'Puzzle and solution are required',
       });
     }
 
@@ -130,19 +131,19 @@ router.post('/hint', async (req, res) => {
       return res.status(200).json({
         success: true,
         message: 'Puzzle is already complete',
-        data: null
+        data: null,
       });
     }
 
     res.status(200).json({
       success: true,
-      data: hint
+      data: hint,
     });
   } catch (error) {
     console.error('Error getting hint:', error);
     res.status(500).json({
       success: false,
-      message: 'Error getting hint'
+      message: 'Error getting hint',
     });
   }
 });

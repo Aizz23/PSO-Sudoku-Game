@@ -1,0 +1,85 @@
+name: Lint code (backend + frontend)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  lint-backend:
+    name: Lint Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect backend language
+        id: detect-backend
+        run: |
+          echo "language="
+          if [ -f backend/package.json ]; then echo "language=node" >> "$GITHUB_OUTPUT"; fi
+          if [ -f backend/requirements.txt ] || [ -f backend/pyproject.toml ]; then echo "language=python" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Run Node linters (backend)
+        if: steps.detect-backend.outputs.language == 'node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install & run backend ESLint (Node)
+        if: steps.detect-backend.outputs.language == 'node'
+        run: |
+          cd backend
+          npm ci
+          npm run lint
+
+      - name: Run Python linter (backend)
+        if: steps.detect-backend.outputs.language == 'python'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install & run flake8 (backend)
+        if: steps.detect-backend.outputs.language == 'python'
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+          flake8 backend
+
+  lint-frontend:
+    name: Lint Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect frontend language
+        id: detect-frontend
+        run: |
+          echo "language="
+          if [ -f frontend/package.json ]; then echo "language=node" >> "$GITHUB_OUTPUT"; fi
+          if [ -f frontend/requirements.txt ] || [ -f frontend/pyproject.toml ]; then echo "language=python" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Run Node linters (frontend)
+        if: steps.detect-frontend.outputs.language == 'node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install & run frontend ESLint (Node)
+        if: steps.detect-frontend.outputs.language == 'node'
+        run: |
+          cd frontend
+          npm ci
+          npm run lint
+
+      - name: Run Python linter (frontend)
+        if: steps.detect-frontend.outputs.language == 'python'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install & run flake8 (frontend)
+        if: steps.detect-frontend.outputs.language == 'python'
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+          flake8 frontend

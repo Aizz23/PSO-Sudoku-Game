@@ -12,7 +12,9 @@ class SudokuGenerator {
    * Generate a complete valid Sudoku solution
    */
   generateSolution() {
-    const board = Array(this.SIZE).fill(null).map(() => Array(this.SIZE).fill(0));
+    const board = Array(this.SIZE)
+      .fill(null)
+      .map(() => Array(this.SIZE).fill(0));
     this.fillBoard(board);
     return board;
   }
@@ -22,18 +24,18 @@ class SudokuGenerator {
    */
   fillBoard(board) {
     const numbers = this.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-    
+
     for (let row = 0; row < this.SIZE; row++) {
       for (let col = 0; col < this.SIZE; col++) {
         if (board[row][col] === 0) {
           for (let num of numbers) {
             if (this.isValid(board, row, col, num)) {
               board[row][col] = num;
-              
+
               if (this.fillBoard(board)) {
                 return true;
               }
-              
+
               board[row][col] = 0;
             }
           }
@@ -61,7 +63,7 @@ class SudokuGenerator {
     // Check 3x3 box
     const boxRow = Math.floor(row / this.BOX_SIZE) * this.BOX_SIZE;
     const boxCol = Math.floor(col / this.BOX_SIZE) * this.BOX_SIZE;
-    
+
     for (let i = 0; i < this.BOX_SIZE; i++) {
       for (let j = 0; j < this.BOX_SIZE; j++) {
         if (board[boxRow + i][boxCol + j] === num) return false;
@@ -76,20 +78,20 @@ class SudokuGenerator {
    */
   generatePuzzle(difficulty = 'medium') {
     const solution = this.generateSolution();
-    const puzzle = solution.map(row => [...row]);
-    
+    const puzzle = solution.map((row) => [...row]);
+
     const cellsToRemove = this.getCellsToRemove(difficulty);
     let removed = 0;
     const attempts = cellsToRemove * 3; // Maximum attempts
-    
+
     for (let i = 0; i < attempts && removed < cellsToRemove; i++) {
       const row = Math.floor(Math.random() * this.SIZE);
       const col = Math.floor(Math.random() * this.SIZE);
-      
+
       if (puzzle[row][col] !== 0) {
         const backup = puzzle[row][col];
         puzzle[row][col] = 0;
-        
+
         // Ensure puzzle still has unique solution
         if (this.hasUniqueSolution(puzzle)) {
           removed++;
@@ -102,7 +104,7 @@ class SudokuGenerator {
     return {
       puzzle: this.boardToString(puzzle),
       solution: this.boardToString(solution),
-      difficulty
+      difficulty,
     };
   }
 
@@ -111,10 +113,10 @@ class SudokuGenerator {
    */
   getCellsToRemove(difficulty) {
     const levels = {
-      easy: 30,     // Remove 30 cells
-      medium: 40,   // Remove 40 cells
-      hard: 50,     // Remove 50 cells
-      expert: 55    // Remove 55 cells
+      easy: 30, // Remove 30 cells
+      medium: 40, // Remove 40 cells
+      hard: 50, // Remove 50 cells
+      expert: 55, // Remove 55 cells
     };
     return levels[difficulty] || levels.medium;
   }
@@ -148,16 +150,16 @@ class SudokuGenerator {
         }
       }
     }
-    
+
     // Found a complete solution
-    solutions.push(board.map(row => [...row]));
+    solutions.push(board.map((row) => [...row]));
   }
 
   /**
    * Solve a Sudoku puzzle
    */
   solve(board) {
-    const copy = board.map(row => [...row]);
+    const copy = board.map((row) => [...row]);
     if (this.fillBoard(copy)) {
       return copy;
     }
@@ -168,15 +170,17 @@ class SudokuGenerator {
    * Convert board to string array format
    */
   boardToString(board) {
-    return board.map(row => row.map(cell => cell === 0 ? '-' : cell.toString()));
+    return board.map((row) =>
+      row.map((cell) => (cell === 0 ? '-' : cell.toString()))
+    );
   }
 
   /**
    * Convert string array to board
    */
   stringToBoard(stringBoard) {
-    return stringBoard.map(row => 
-      row.map(cell => cell === '-' ? 0 : parseInt(cell))
+    return stringBoard.map((row) =>
+      row.map((cell) => (cell === '-' ? 0 : parseInt(cell)))
     );
   }
 
@@ -200,7 +204,7 @@ class SudokuGenerator {
       for (let col = 0; col < this.SIZE; col++) {
         const num = board[row][col];
         if (num === 0) return false;
-        
+
         board[row][col] = 0;
         if (!this.isValid(board, row, col, num)) {
           board[row][col] = num;
@@ -217,7 +221,7 @@ class SudokuGenerator {
    */
   getHint(puzzle, solution) {
     const emptyCells = [];
-    
+
     for (let row = 0; row < this.SIZE; row++) {
       for (let col = 0; col < this.SIZE; col++) {
         if (puzzle[row][col] === '-' || puzzle[row][col] === '0') {
@@ -225,9 +229,9 @@ class SudokuGenerator {
         }
       }
     }
-    
+
     if (emptyCells.length === 0) return null;
-    
+
     const randomIndex = Math.floor(Math.random() * emptyCells.length);
     return emptyCells[randomIndex];
   }
