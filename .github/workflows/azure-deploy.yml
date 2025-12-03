@@ -169,16 +169,26 @@ jobs:
   # ═══════════════════════════════════════════════════════
 
   deploy-to-azure:
-    name: 🚀 Deploy to Azure Container Apps
-    needs: [build-backend, build-frontend]
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  name: 🚀 Deploy to Azure Container Apps
+  needs: [build-backend, build-frontend]
+  runs-on: ubuntu-latest
+  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  
+  # Add permissions for OIDC
+  permissions:
+    id-token: write
+    contents: read
+  
+  steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
     
-    steps:
-    - name: 🔐 Login to Azure
+    - name: 🔐 Login to Azure using OIDC
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        client-id: ${{ secrets. AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets. AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.  AZURE_SUBSCRIPTION_ID }}
     
     - name: 🚢 Deploy Backend to Azure Container Apps
       uses: azure/CLI@v1
@@ -186,7 +196,7 @@ jobs:
         inlineScript: |
           echo "Deploying backend..."
           az containerapp update \
-            --name ${{ env. BACKEND_CONTAINER_APP }} \
+            --name ${{ env.BACKEND_CONTAINER_APP }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
             --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }} \
             --set-env-vars \
@@ -200,14 +210,13 @@ jobs:
         inlineScript: |
           echo "Deploying frontend..."
           az containerapp update \
-            --name ${{ env.FRONTEND_CONTAINER_APP }} \
-            --resource-group ${{ env. AZURE_RESOURCE_GROUP }} \
-            --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env. FRONTEND_IMAGE_NAME }}:${{ github.sha }} \
+            --name ${{ env. FRONTEND_CONTAINER_APP }} \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }} \
             --set-env-vars \
-              "REACT_APP_APPINSIGHTS_CONNECTION_STRING=${{ secrets. APPINSIGHTS_CONNECTION_STRING }}"
+              "REACT_APP_APPINSIGHTS_CONNECTION_STRING=${{ secrets.APPINSIGHTS_CONNECTION_STRING }}"
           
           echo "✅ Frontend deployed successfully!"
-    
     - name: 🎉 Deployment Complete
       run: |
         echo "╔════════════════════════════════════════════════════════╗"
