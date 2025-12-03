@@ -15,7 +15,13 @@
     "docker-dev": "docker-compose up",
     "docker-prod": "docker-compose -f docker-compose.prod.yml up -d",
     "docker-down": "docker-compose down",
-    "docker-clean": "docker-compose down -v && docker system prune -f"
+    "docker-clean": "docker-compose down -v && docker system prune -f",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:frontend": "cd frontend && npm run lint",
+    "format": "prettier --write \"**/*.{js,jsx,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,json,md,yml,yaml}\""
   },
   "repository": {
     "type": "git",
@@ -38,11 +44,16 @@
   },
   "homepage": "https://github.com/Aizz23/PSO-Sudoku-Game#readme",
   "devDependencies": {
+    "@eslint/js": "^9.15.0",
     "eslint": "^9.39.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-formatter-unix": "^9.0.1",
+    "eslint-config-prettier": "^10.1. 8",
+    "eslint-formatter-unix": "^9. 0.1",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "prettier": "^3.7.4"
-  }
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ]
 }
