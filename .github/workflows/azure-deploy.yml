@@ -1,4 +1,4 @@
-name: CI/CD Pipeline - Build Only
+name: CI/CD Pipeline - Build and Deploy
 
 on:
   push:
@@ -15,6 +15,35 @@ env:
   NODE_VERSION: '20'
   
 jobs:
+  # ════════════════════════════════════════════════════════
+  # LINTING (Non-blocking - won't fail the build)
+  # ════════════════════════════════════════════════════════
+  
+  lint:
+    name: 🧹 Lint Code
+    runs-on: ubuntu-latest
+    continue-on-error: true  # Don't fail the build
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env. NODE_VERSION }}
+        
+    - name: 📦 Install root dependencies
+      run: npm install
+      
+    - name: 🧹 Run ESLint
+      run: npm run lint
+      continue-on-error: true
+
+  # ════════════════════════════════════════════════════════
+  # TESTING
+  # ════════════════════════════════════════════════════════
+  
   test-backend:
     name: 🧪 Test Backend
     runs-on: ubuntu-latest
@@ -26,7 +55,7 @@ jobs:
     - name: 🔧 Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ env.NODE_VERSION }}
+        node-version: ${{ env. NODE_VERSION }}
         cache: 'npm'
         cache-dependency-path: backend/package-lock.json
         
@@ -36,11 +65,11 @@ jobs:
       
     - name: 🧪 Run tests
       working-directory: ./backend
-      run: npm test --if-present || echo "No tests found, continuing..."
+      run: npm test --if-present || echo "No tests, continuing..."
       continue-on-error: true
 
   test-frontend:
-    name: 🧪 Test Frontend
+    name: 🧪 Test Frontend  
     runs-on: ubuntu-latest
     
     steps:
@@ -60,9 +89,13 @@ jobs:
       
     - name: 🧪 Run tests
       working-directory: ./frontend
-      run: npm test --if-present -- --passWithNoTests || echo "No tests found, continuing..."
+      run: npm test --if-present -- --passWithNoTests || echo "No tests, continuing..."
       continue-on-error: true
 
+  # ════════════════════════════════════════════════════════
+  # BUILD & PUSH
+  # ════════════════════════════════════════════════════════
+  
   build-backend:
     name: 🏗️ Build and Push Backend
     runs-on: ubuntu-latest
@@ -89,8 +122,8 @@ jobs:
         context: ./backend
         push: true
         tags: |
-          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github. sha }}
-          ${{ env. AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }}
+          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest
         cache-from: type=gha,scope=backend
         cache-to: type=gha,mode=max,scope=backend
 
@@ -120,37 +153,32 @@ jobs:
         context: ./frontend
         push: true
         build-args: |
-          REACT_APP_APPINSIGHTS_CONNECTION_STRING=${{ secrets. APPINSIGHTS_CONNECTION_STRING }}
+          REACT_APP_APPINSIGHTS_CONNECTION_STRING=${{ secrets.APPINSIGHTS_CONNECTION_STRING }}
         tags: |
           ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }}
-          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
+          ${{ env. AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
         cache-from: type=gha,scope=frontend
         cache-to: type=gha,mode=max,scope=frontend
 
-  deployment-instructions:
-    name: 🚀 Ready to Deploy
+  # ════════════════════════════════════════════════════════
+  # DEPLOYMENT INFO
+  # ════════════════════════════════════════════════════════
+  
+  deployment-ready:
+    name: ✅ Build Complete
     needs: [build-backend, build-frontend]
     runs-on: ubuntu-latest
     
     steps:
-    - name: 📝 Deployment Instructions
+    - name: 📝 Next Steps
       run: |
         echo "╔════════════════════════════════════════════════════════╗"
-        echo "║  ✅ BUILD COMPLETED - READY TO DEPLOY                 ║"
+        echo "║  ✅ BUILD COMPLETED SUCCESSFULLY                      ║"
         echo "╚════════════════════════════════════════════════════════╝"
         echo ""
-        echo "📦 Images built and pushed to ACR:"
+        echo "🚀 To deploy, run locally:"
+        echo "   ./deploy-all.sh"
+        echo ""
+        echo "📦 Images available:"
         echo "   Backend:  ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest"
         echo "   Frontend: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
-        echo ""
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "🚀 TO DEPLOY, RUN THIS LOCALLY:"
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo ""
-        echo "  ./deploy-all.sh"
-        echo ""
-        echo "Or deploy individually:"
-        echo "  ./deploy-backend.sh"
-        echo "  ./deploy-frontend.sh"
-        echo ""
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

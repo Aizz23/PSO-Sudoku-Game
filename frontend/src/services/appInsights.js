@@ -15,22 +15,19 @@ const appInsights = new ApplicationInsights({
     disableFetchTracking: false,
     disableAjaxTracking: false,
     autoTrackPageVisitTime: true,
-    enableCorsCorrelation: true,
-    enableRequestHeaderTracking: true,
-    enableResponseHeaderTracking: true,
   },
 });
 
-if (process. env.REACT_APP_APPINSIGHTS_CONNECTION_STRING) {
+if (process.env.REACT_APP_APPINSIGHTS_CONNECTION_STRING) {
   appInsights.loadAppInsights();
-  console. log('✅ Application Insights initialized for React');
+  console.log('✅ Application Insights initialized for React');
 } else {
   console.warn('⚠️  React App Insights connection string not found');
 }
 
 // Export for custom tracking
 export const trackEvent = (name, properties) => {
-  appInsights. trackEvent({ name }, properties);
+  appInsights.trackEvent({ name }, properties);
 };
 
 export const trackException = (error, properties) => {
