@@ -5,6 +5,7 @@ const reactPlugin = new ReactPlugin();
 
 const appInsights = new ApplicationInsights({
   config: {
+    // eslint-disable-next-line no-undef
     connectionString: process.env.REACT_APP_APPINSIGHTS_CONNECTION_STRING,
     extensions: [reactPlugin],
     enableAutoRouteTracking: true,
@@ -18,6 +19,7 @@ const appInsights = new ApplicationInsights({
   },
 });
 
+// eslint-disable-next-line no-undef
 if (process.env.REACT_APP_APPINSIGHTS_CONNECTION_STRING) {
   appInsights.loadAppInsights();
   console.log('✅ Application Insights initialized for React');
