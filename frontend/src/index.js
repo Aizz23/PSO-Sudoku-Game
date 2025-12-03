@@ -1,11 +1,12 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import { AppInsightsContext } from '@microsoft/applicationinsights-react-js';
+import { reactPlugin } from './services/appInsights';
 import App from './App';
+import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  <AppInsightsContext. Provider value={reactPlugin}>
     <App />
-  </React.StrictMode>
+  </AppInsightsContext.Provider>
 );

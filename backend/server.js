@@ -1,3 +1,25 @@
+const appInsights = require('applicationinsights');
+
+if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+  appInsights
+    .setup(process.env. APPLICATIONINSIGHTS_CONNECTION_STRING)
+    .setAutoDependencyCorrelation(true)
+    .setAutoCollectRequests(true)
+    .setAutoCollectPerformance(true, true)
+    .setAutoCollectExceptions(true)
+    .setAutoCollectDependencies(true)
+    .setAutoCollectConsole(true)
+    .setAutoCollectHeartbeat(true)
+    .setUseDiskRetryCaching(true)
+    .setSendLiveMetrics(true)
+    .setDistributedTracingMode(appInsights.DistributedTracingModes.AI_AND_W3C)
+    .start();
+
+  console.log('✅ Application Insights initialized');
+} else {
+  console.warn('⚠️  Application Insights connection string not found');
+}
+
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');

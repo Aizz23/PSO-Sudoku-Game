@@ -1,5 +1,5 @@
 # Backend Dockerfile
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -21,3 +21,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 
 # Start application
 CMD ["node", "server.js"]
+
+ENV APPLICATIONINSIGHTS_CONNECTION_STRING=""
