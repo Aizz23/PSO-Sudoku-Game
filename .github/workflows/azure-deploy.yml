@@ -1,4 +1,4 @@
-name: CI/CD Pipeline - Test, Build, Deploy
+name: CI/CD Pipeline - Build Only
 
 on:
   push:
@@ -12,15 +12,9 @@ env:
   AZURE_RESOURCE_GROUP: sudoku-rg
   BACKEND_IMAGE_NAME: sudoku-backend
   FRONTEND_IMAGE_NAME: sudoku-frontend
-  BACKEND_CONTAINER_APP: sudoku-backend
-  FRONTEND_CONTAINER_APP: sudoku-frontend
-  NODE_VERSION: '20'  # Updated to Node 20 for App Insights compatibility
+  NODE_VERSION: '20'
   
 jobs:
-  # ═══════════════════════════════════════════════════════
-  # STAGE 1: TESTING (Quality Gate)
-  # ═══════════════════════════════════════════════════════
-  
   test-backend:
     name: 🧪 Test Backend
     runs-on: ubuntu-latest
@@ -44,10 +38,7 @@ jobs:
       working-directory: ./backend
       run: npm test --if-present || echo "No tests found, continuing..."
       continue-on-error: true
-      
-    - name: ✅ Backend tests passed
-      run: echo "Backend tests completed successfully!"
-  
+
   test-frontend:
     name: 🧪 Test Frontend
     runs-on: ubuntu-latest
@@ -71,61 +62,9 @@ jobs:
       working-directory: ./frontend
       run: npm test --if-present -- --passWithNoTests || echo "No tests found, continuing..."
       continue-on-error: true
-      
-    - name: 🏗️ Build check
-      working-directory: ./frontend
-      run: npm run build
-      continue-on-error: true
-      env:
-        REACT_APP_APPINSIGHTS_CONNECTION_STRING: ${{ secrets. APPINSIGHTS_CONNECTION_STRING }}
-      
-    - name: ✅ Frontend tests passed
-      run: echo "Frontend tests completed successfully!"
-  
-  # ═══════════════════════════════════════════════════════
-  # STAGE 2: BUILD & PUSH (Only if tests pass)
-  # ═══════════════════════════════════════════════════════
-  
+
   build-backend:
     name: 🏗️ Build and Push Backend
-    runs-on: ubuntu-latest
-    needs: [test-backend, test-frontend]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
-    steps:
-    - name: 📥 Checkout code
-      uses: actions/checkout@v4
-    
-    - name: 🔧 Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-    
-    - name: 🔐 Log in to Azure Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ env. AZURE_REGISTRY_LOGIN_SERVER }}
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
-    
-    - name: 🏗️ Build and push Backend Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: ./backend
-        push: true
-        tags: |
-          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github. sha }}
-          ${{ env. AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest
-        cache-from: type=gha,scope=backend
-        cache-to: type=gha,mode=max,scope=backend
-    
-    - name: 📋 Backend Image Info
-      run: |
-        echo "✅ Backend image pushed successfully!"
-        echo "📦 Tags:"
-        echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env. BACKEND_IMAGE_NAME }}:${{ github.sha }}"
-        echo "  - ${{ env. AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest"
-
-  build-frontend:
-    name: 🏗️ Build and Push Frontend
     runs-on: ubuntu-latest
     needs: [test-backend, test-frontend]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -144,6 +83,37 @@ jobs:
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
     
+    - name: 🏗️ Build and push Backend Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        push: true
+        tags: |
+          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github. sha }}
+          ${{ env. AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+        cache-from: type=gha,scope=backend
+        cache-to: type=gha,mode=max,scope=backend
+
+  build-frontend:
+    name: 🏗️ Build and Push Frontend
+    runs-on: ubuntu-latest
+    needs: [test-backend, test-frontend]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: 🔧 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: 🔐 Log in to Azure Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env. AZURE_REGISTRY_LOGIN_SERVER }}
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+    
     - name: 🏗️ Build and push Frontend Docker image
       uses: docker/build-push-action@v5
       with:
@@ -156,87 +126,31 @@ jobs:
           ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
         cache-from: type=gha,scope=frontend
         cache-to: type=gha,mode=max,scope=frontend
-    
-    - name: 📋 Frontend Image Info
-      run: |
-        echo "✅ Frontend image pushed successfully!"
-        echo "📦 Tags:"
-        echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github. sha }}"
-        echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
 
-  # ═══════════════════════════════════════════════════════
-  # STAGE 3: DEPLOY TO AZURE (Automatic)
-  # ═══════════════════════════════════════════════════════
-
-  deploy-to-azure:
-  name: 🚀 Deploy to Azure Container Apps
-  needs: [build-backend, build-frontend]
-  runs-on: ubuntu-latest
-  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-  
-  # Add permissions for OIDC
-  permissions:
-    id-token: write
-    contents: read
-  
-  steps:
-    - name: 📥 Checkout code
-      uses: actions/checkout@v4
+  deployment-instructions:
+    name: 🚀 Ready to Deploy
+    needs: [build-backend, build-frontend]
+    runs-on: ubuntu-latest
     
-    - name: 🔐 Login to Azure using OIDC
-      uses: azure/login@v1
-      with:
-        client-id: ${{ secrets. AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets. AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.  AZURE_SUBSCRIPTION_ID }}
-    
-    - name: 🚢 Deploy Backend to Azure Container Apps
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          echo "Deploying backend..."
-          az containerapp update \
-            --name ${{ env.BACKEND_CONTAINER_APP }} \
-            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }} \
-            --set-env-vars \
-              "APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.APPINSIGHTS_CONNECTION_STRING }}"
-          
-          echo "✅ Backend deployed successfully!"
-    
-    - name: 🚢 Deploy Frontend to Azure Container Apps
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          echo "Deploying frontend..."
-          az containerapp update \
-            --name ${{ env. FRONTEND_CONTAINER_APP }} \
-            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }} \
-            --set-env-vars \
-              "REACT_APP_APPINSIGHTS_CONNECTION_STRING=${{ secrets.APPINSIGHTS_CONNECTION_STRING }}"
-          
-          echo "✅ Frontend deployed successfully!"
-    - name: 🎉 Deployment Complete
+    steps:
+    - name: 📝 Deployment Instructions
       run: |
         echo "╔════════════════════════════════════════════════════════╗"
-        echo "║  🎉 DEPLOYMENT COMPLETED SUCCESSFULLY!                ║"
+        echo "║  ✅ BUILD COMPLETED - READY TO DEPLOY                 ║"
         echo "╚════════════════════════════════════════════════════════╝"
         echo ""
-        echo "✅ Stage 1: Tests Passed"
-        echo "✅ Stage 2: Docker Images Built & Pushed to ACR"
-        echo "✅ Stage 3: Deployed to Azure Container Apps"
+        echo "📦 Images built and pushed to ACR:"
+        echo "   Backend:  ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest"
+        echo "   Frontend: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "🌐 Application URLs:"
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "Backend:  https://sudoku-backend. agreeableforest-82817a2d.southeastasia.azurecontainerapps.io"
-        echo "Frontend: https://sudoku-frontend. agreeableforest-82817a2d.southeastasia. azurecontainerapps.io"
-        echo ""
-        echo "📊 Monitor your app:"
-        echo "https://portal.azure.com/#@/resource/subscriptions/. ../resourceGroups/sudoku-rg"
+        echo "🚀 TO DEPLOY, RUN THIS LOCALLY:"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
-        echo "📦 Deployed Images:"
-        echo "  Backend:  ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }}"
-        echo "  Frontend: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env. FRONTEND_IMAGE_NAME }}:${{ github.sha }}"
+        echo "  ./deploy-all.sh"
+        echo ""
+        echo "Or deploy individually:"
+        echo "  ./deploy-backend.sh"
+        echo "  ./deploy-frontend.sh"
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
