@@ -1,4 +1,4 @@
-// eslint.config.cjs - flat config (correct use of languageOptions.globals)
+// eslint.config.cjs - flat config (correct use of languageOptions. globals)
 module.exports = [
   // Ignore common build directories
   {
@@ -25,7 +25,6 @@ module.exports = [
       "prettier/prettier": "error",
       "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
       "no-console": "off",
-      "quotes": ["error", "single"],
       "semi": ["error", "always"]
     }
   },
@@ -36,6 +35,27 @@ module.exports = [
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: "module",
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true
+        }
+      },
+      globals: {
+        window: "readonly",
+        document: "readonly",
+        navigator: "readonly",
+        console: "readonly",
+        localStorage: "readonly",
+        sessionStorage: "readonly",
+        fetch: "readonly",
+        alert: "readonly",
+        confirm: "readonly",
+        prompt: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly"
+      }
     },
     plugins: {
       react: require("eslint-plugin-react"),
@@ -47,14 +67,13 @@ module.exports = [
     rules: {
       "prettier/prettier": "error",
       "react/react-in-jsx-scope": "off",
-      "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
-      "quotes": ["error", "single"]
+      "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
     }
   },
 
   // Tests: relax some checks for test files
   {
-    files: ["**/*.test.{js,jsx,ts,tsx}", "**/__tests__/**/*.{js,jsx,ts,tsx}"],
+    files: ["**/*. test.{js,jsx,ts,tsx}", "**/__tests__/**/*. {js,jsx,ts,tsx}"],
     rules: {
       "no-unused-expressions": "off"
     }

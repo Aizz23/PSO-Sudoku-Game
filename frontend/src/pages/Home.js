@@ -11,7 +11,7 @@ const Home = () => {
           <p className="hero-subtitle">
             Challenge your mind with puzzles of varying difficulty levels
           </p>
-          
+
           <div className="hero-actions">
             <Link to="/game" className="btn btn-primary btn-large">
               Start Playing
@@ -30,19 +30,19 @@ const Home = () => {
               <h3>Multiple Difficulty Levels</h3>
               <p>Choose from Easy, Medium, Hard, or Expert puzzles</p>
             </div>
-            
+
             <div className="feature-card">
               <div className="feature-icon">⏱️</div>
               <h3>Track Your Time</h3>
               <p>See how fast you can solve puzzles and beat your records</p>
             </div>
-            
+
             <div className="feature-card">
               <div className="feature-icon">💡</div>
               <h3>Hints Available</h3>
               <p>Get help when you're stuck with our hint system</p>
             </div>
-            
+
             <div className="feature-card">
               <div className="feature-icon">🏆</div>
               <h3>Leaderboard</h3>
@@ -58,14 +58,21 @@ const Home = () => {
               <li>Select a difficulty level to start a new game</li>
               <li>Click on an empty cell to select it</li>
               <li>Choose a number from 1-9 to fill the cell</li>
-              <li>Fill the entire 9x9 grid following Sudoku rules:
+              <li>
+                Fill the entire 9x9 grid following Sudoku rules:
                 <ul>
                   <li>Each row must contain digits 1-9 without repetition</li>
-                  <li>Each column must contain digits 1-9 without repetition</li>
-                  <li>Each 3x3 box must contain digits 1-9 without repetition</li>
+                  <li>
+                    Each column must contain digits 1-9 without repetition
+                  </li>
+                  <li>
+                    Each 3x3 box must contain digits 1-9 without repetition
+                  </li>
                 </ul>
               </li>
-              <li>Complete the puzzle as fast as you can to get a high score!</li>
+              <li>
+                Complete the puzzle as fast as you can to get a high score!
+              </li>
             </ol>
           </div>
         </div>

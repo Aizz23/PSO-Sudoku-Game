@@ -44,7 +44,7 @@ const Game = ({ user }) => {
 
       setPuzzle(newPuzzle);
       setSolution(newSolution);
-      setCurrentState(newPuzzle.map(row => [...row]));
+      setCurrentState(newPuzzle.map((row) => [...row]));
       setGameStarted(true);
       setTimer(0);
       setHintsUsed(0);
@@ -77,13 +77,13 @@ const Game = ({ user }) => {
 
   const handleNumberSelect = (num) => {
     setSelectedNumber(num);
-    
+
     if (selectedCell && num) {
       const { row, col } = selectedCell;
-      
+
       // Check if cell is editable
       if (puzzle[row][col] === '-' || puzzle[row][col] === '0') {
-        const newState = currentState.map(r => [...r]);
+        const newState = currentState.map((r) => [...r]);
         newState[row][col] = num.toString();
         setCurrentState(newState);
 
@@ -94,7 +94,7 @@ const Game = ({ user }) => {
       // Erase cell
       const { row, col } = selectedCell;
       if (puzzle[row][col] === '-' || puzzle[row][col] === '0') {
-        const newState = currentState.map(r => [...r]);
+        const newState = currentState.map((r) => [...r]);
         newState[row][col] = '-';
         setCurrentState(newState);
       }
@@ -102,8 +102,8 @@ const Game = ({ user }) => {
   };
 
   const checkCompletion = (state) => {
-    const isFilled = state.every(row => 
-      row.every(cell => cell !== '-' && cell !== '0')
+    const isFilled = state.every((row) =>
+      row.every((cell) => cell !== '-' && cell !== '0')
     );
 
     if (isFilled) {
@@ -129,7 +129,9 @@ const Game = ({ user }) => {
         hintsUsed,
       });
 
-      toast.success(`🎉 Congratulations! You completed the puzzle in ${formatTime(timer)}!`);
+      toast.success(
+        `🎉 Congratulations! You completed the puzzle in ${formatTime(timer)}!`
+      );
     } catch (error) {
       console.error('Error completing game:', error);
     }
@@ -151,7 +153,7 @@ const Game = ({ user }) => {
       }
 
       const { row, col, value } = hint;
-      const newState = currentState.map(r => [...r]);
+      const newState = currentState.map((r) => [...r]);
       newState[row][col] = value;
       setCurrentState(newState);
       setHintsUsed(hintsUsed + 1);
@@ -166,7 +168,7 @@ const Game = ({ user }) => {
 
   const resetGame = () => {
     if (puzzle) {
-      setCurrentState(puzzle.map(row => [...row]));
+      setCurrentState(puzzle.map((row) => [...row]));
       setTimer(0);
       setHintsUsed(0);
       setGameCompleted(false);
@@ -181,7 +183,7 @@ const Game = ({ user }) => {
       <div className="container">
         <div className="game-header">
           <h1>Sudoku Game</h1>
-          
+
           {!gameStarted && !gameCompleted && (
             <div className="game-setup">
               <div className="difficulty-selector">
@@ -213,7 +215,7 @@ const Game = ({ user }) => {
                   </button>
                 </div>
               </div>
-              
+
               <button
                 className="btn btn-success btn-large"
                 onClick={startNewGame}
@@ -258,7 +260,11 @@ const Game = ({ user }) => {
             />
 
             <div className="game-controls">
-              <button className="btn btn-warning" onClick={getHint} disabled={hintsUsed >= 3}>
+              <button
+                className="btn btn-warning"
+                onClick={getHint}
+                disabled={hintsUsed >= 3}
+              >
                 💡 Get Hint ({3 - hintsUsed} left)
               </button>
               <button className="btn btn-secondary" onClick={resetGame}>
@@ -279,7 +285,10 @@ const Game = ({ user }) => {
               <p>Time: {formatTime(timer)}</p>
               <p>Hints Used: {hintsUsed}</p>
             </div>
-            <button className="btn btn-primary btn-large" onClick={startNewGame}>
+            <button
+              className="btn btn-primary btn-large"
+              onClick={startNewGame}
+            >
               Play Again
             </button>
           </div>

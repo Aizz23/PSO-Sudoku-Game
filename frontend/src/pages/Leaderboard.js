@@ -185,7 +185,9 @@ const Leaderboard = () => {
                           {index > 2 && index + 1}
                         </td>
                         <td>{game.username}</td>
-                        <td className="time">⏱️ {formatTime(game.timeElapsed)}</td>
+                        <td className="time">
+                          ⏱️ {formatTime(game.timeElapsed)}
+                        </td>
                         <td>{game.score}</td>
                         <td>
                           <span className={`badge badge-${game.difficulty}`}>
@@ -231,7 +233,9 @@ const Leaderboard = () => {
                             : 'N/A'}
                         </td>
                         <td>
-                          {player.bestTime ? formatTime(player.bestTime) : 'N/A'}
+                          {player.bestTime
+                            ? formatTime(player.bestTime)
+                            : 'N/A'}
                         </td>
                       </tr>
                     ))}
@@ -269,7 +273,9 @@ const Leaderboard = () => {
                   <h3>Games by Difficulty</h3>
                   {stats.gamesByDifficulty.map((item) => (
                     <div key={item._id} className="difficulty-stat-item">
-                      <span className={`badge badge-${item._id}`}>{item._id}</span>
+                      <span className={`badge badge-${item._id}`}>
+                        {item._id}
+                      </span>
                       <span className="count">{item.count} games</span>
                     </div>
                   ))}

@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
@@ -40,21 +46,25 @@ function App() {
       <div className="App">
         <Navbar user={user} onLogout={handleLogout} />
         <ToastContainer position="top-right" autoClose={3000} />
-        
+
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route 
-            path="/game" 
-            element={user ? <Game user={user} /> : <Navigate to="/login" />} 
+          <Route
+            path="/game"
+            element={user ? <Game user={user} /> : <Navigate to="/login" />}
           />
           <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route 
-            path="/login" 
-            element={user ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} 
+          <Route
+            path="/login"
+            element={
+              user ? <Navigate to="/" /> : <Login onLogin={handleLogin} />
+            }
           />
-          <Route 
-            path="/register" 
-            element={user ? <Navigate to="/" /> : <Register onLogin={handleLogin} />} 
+          <Route
+            path="/register"
+            element={
+              user ? <Navigate to="/" /> : <Register onLogin={handleLogin} />
+            }
           />
         </Routes>
       </div>

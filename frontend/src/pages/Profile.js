@@ -88,7 +88,9 @@ const Profile = ({ user }) => {
             </div>
             <div className="stat-box">
               <div className="stat-icon">⏱️</div>
-              <div className="stat-value">{formatTime(userStats?.bestTime)}</div>
+              <div className="stat-value">
+                {formatTime(userStats?.bestTime)}
+              </div>
               <div className="stat-name">Best Time</div>
             </div>
             <div className="stat-box">
@@ -115,7 +117,9 @@ const Profile = ({ user }) => {
         <div className="recent-games-section">
           <h3>Recent Games</h3>
           {recentGames.length === 0 ? (
-            <p className="no-games">No games played yet. Start playing to see your history!</p>
+            <p className="no-games">
+              No games played yet. Start playing to see your history!
+            </p>
           ) : (
             <div className="games-table-container">
               <table className="games-table">

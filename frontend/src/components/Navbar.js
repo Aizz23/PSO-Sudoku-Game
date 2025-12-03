@@ -16,24 +16,30 @@ const Navbar = ({ user, onLogout }) => {
         <Link to="/" className="navbar-brand">
           🎮 Sudoku Game
         </Link>
-        
+
         <div className="navbar-menu">
-          <Link to="/" className="navbar-link">Home</Link>
-          <Link to="/game" className="navbar-link">Play</Link>
-          <Link to="/leaderboard" className="navbar-link">Leaderboard</Link>
-          
+          <Link to="/" className="navbar-link">
+            Home
+          </Link>
+          <Link to="/game" className="navbar-link">
+            Play
+          </Link>
+          <Link to="/leaderboard" className="navbar-link">
+            Leaderboard
+          </Link>
+
           {user ? (
             <>
-              <span className="navbar-user">
-                👤 {user.username}
-              </span>
+              <span className="navbar-user">👤 {user.username}</span>
               <button onClick={handleLogout} className="btn btn-danger btn-sm">
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="navbar-link">Login</Link>
+              <Link to="/login" className="navbar-link">
+                Login
+              </Link>
               <Link to="/register" className="btn btn-primary btn-sm">
                 Register
               </Link>
