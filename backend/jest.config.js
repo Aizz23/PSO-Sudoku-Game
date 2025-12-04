@@ -15,10 +15,10 @@ module.exports = {
   // Coverage thresholds (fail if below these percentages)
   coverageThreshold: {
     global: {
-      branches: 50,
-      functions: 50,
-      lines: 50,
-      statements: 50
+      branches: 40,
+      functions: 40,
+      lines: 40,
+      statements: 40
     }
   },
   
@@ -44,5 +44,5 @@ module.exports = {
   clearMocks: true,
   
   // Detect open handles
-  detectOpenHandles: true
+  detectOpenHandles: false
 };

@@ -52,7 +52,7 @@ describe('SudokuBoard Component', () => {
   describe('Rendering', () => {
     it('should render 9x9 grid (81 cells)', () => {
       const { container } = render(<SudokuBoard {...defaultProps} />);
-      const cells = container.querySelectorAll('. sudoku-cell');
+      const cells = container.querySelectorAll('.sudoku-cell');
       expect(cells).toHaveLength(81);
     });
 
@@ -60,7 +60,7 @@ describe('SudokuBoard Component', () => {
       const { container } = render(<SudokuBoard {...defaultProps} />);
       
       // First cell should show 5
-      const cells = container.querySelectorAll('. sudoku-cell');
+      const cells = container.querySelectorAll('.sudoku-cell');
       expect(cells[0]).toHaveTextContent('5');
     });
 
@@ -85,7 +85,7 @@ describe('SudokuBoard Component', () => {
   describe('Cell Selection', () => {
     it('should call onCellClick when clicking empty cell', () => {
       const { container } = render(<SudokuBoard {...defaultProps} />);
-      const cells = container.querySelectorAll('. sudoku-cell');
+      const cells = container.querySelectorAll('.sudoku-cell');
       
       // Click on empty cell (index 2, which is '-')
       fireEvent.click(cells[2]);
@@ -133,7 +133,7 @@ describe('SudokuBoard Component', () => {
     it('should add thick borders for 3x3 box separation', () => {
       const { container } = render(<SudokuBoard {...defaultProps} />);
       
-      const bottomBorders = container.querySelectorAll('. border-bottom-thick');
+      const bottomBorders = container.querySelectorAll('.border-bottom-thick');
       const rightBorders = container.querySelectorAll('.border-right-thick');
       
       // Should have thick borders after rows 2, 5 and cols 2, 5
