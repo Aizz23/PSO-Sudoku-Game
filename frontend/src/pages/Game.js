@@ -27,6 +27,7 @@ const Game = ({ user }) => {
         setTimer((prev) => prev + 1);
       }, 1000);
     }
+    // eslint-disable-next-line no-undef
     return () => clearInterval(interval);
   }, [gameStarted, gameCompleted]);
 
