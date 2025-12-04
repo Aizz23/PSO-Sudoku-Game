@@ -32,15 +32,13 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
-        cache-dependency-path: backend/package-lock.json
+        cache-dependency-path: package-lock.json
         
     - name: 📦 Install dependencies
-      working-directory: ./backend
-      run: npm install
+      run: npm ci
       
     - name: 🧪 Run tests
-      working-directory: ./backend
-      run: npm test
+      run: npm test --workspace=backend
       
     - name: ✅ Backend tests passed
       run: echo "Backend tests completed successfully!"
@@ -53,24 +51,21 @@ jobs:
     - name: 📥 Checkout code
       uses: actions/checkout@v4
       
-    - name: 🔧 Setup Node.js
+    - name: 🔧 Setup Node. js
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
+        cache-dependency-path: package-lock.json
         
     - name: 📦 Install dependencies
-      working-directory: ./frontend
-      run: npm install
+      run: npm ci
       
     - name: 🧪 Run tests
-      working-directory: ./frontend
-      run: npm test -- --coverage --watchAll=false
+      run: npm test --workspace=frontend -- --coverage --watchAll=false
       
     - name: 🏗️ Build check
-      working-directory: ./frontend
-      run: npm run build
+      run: npm run build --workspace=frontend
       
     - name: ✅ Frontend tests passed
       run: echo "Frontend tests completed successfully!"
@@ -105,7 +100,7 @@ jobs:
         context: ./backend
         push: true
         tags: |
-          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }}
+          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env. BACKEND_IMAGE_NAME }}:${{ github.sha }}
           ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest
         cache-from: type=gha,scope=backend
         cache-to: type=gha,mode=max,scope=backend
@@ -113,7 +108,7 @@ jobs:
     - name: 🔍 Scan Backend image for vulnerabilities
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }}
+        image-ref: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env. BACKEND_IMAGE_NAME }}:${{ github.sha }}
         format: 'sarif'
         output: 'trivy-backend-results.sarif'
         severity: 'CRITICAL,HIGH'
@@ -148,7 +143,7 @@ jobs:
     - name: 🔐 Log in to Azure Container Registry
       uses: docker/login-action@v3
       with:
-        registry: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}
+        registry: ${{ env. AZURE_REGISTRY_LOGIN_SERVER }}
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
     
@@ -158,8 +153,8 @@ jobs:
         context: ./frontend
         push: true
         tags: |
-          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }}
-          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
+          ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github. sha }}
+          ${{ env. AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
         cache-from: type=gha,scope=frontend
         cache-to: type=gha,mode=max,scope=frontend
     
@@ -182,7 +177,7 @@ jobs:
       run: |
         echo "✅ Frontend image pushed successfully!"
         echo "📦 Tags:"
-        echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }}"
+        echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github. sha }}"
         echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
 
   # ═══════════════════════════════════════════════════════
@@ -212,22 +207,22 @@ jobs:
         echo "./deploy-all.sh"
         echo ""
         echo "# Option 2: Deploy Individual Services"
-        echo "./deploy-backend.sh"
+        echo "./deploy-backend. sh"
         echo "./deploy-frontend.sh"
         echo ""
         echo "# Option 3: Manual Azure CLI"
         echo "az containerapp update \\"
         echo "  --name ${{ secrets.AZURE_CONTAINER_APP_BACKEND }} \\"
         echo "  --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \\"
-        echo "  --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest"
+        echo "  --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env. BACKEND_IMAGE_NAME }}:latest"
         echo ""
         echo "az containerapp update \\"
         echo "  --name ${{ secrets.AZURE_CONTAINER_APP_FRONTEND }} \\"
         echo "  --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \\"
-        echo "  --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
+        echo "  --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env. FRONTEND_IMAGE_NAME }}:latest"
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo "📦 Images Available:"
-        echo "  Backend:  ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest"
-        echo "  Frontend: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
+        echo "  Backend:  ${{ env. AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest"
+        echo "  Frontend: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env. FRONTEND_IMAGE_NAME }}:latest"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
