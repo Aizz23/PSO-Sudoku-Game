@@ -12,7 +12,7 @@ env:
   AZURE_RESOURCE_GROUP: sudoku-rg
   BACKEND_IMAGE_NAME: sudoku-backend
   FRONTEND_IMAGE_NAME: sudoku-frontend
-  NODE_VERSION: '18'
+  NODE_VERSION: '20'
   
 jobs:
   # ═══════════════════════════════════════════════════════
