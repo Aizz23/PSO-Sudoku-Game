@@ -27,6 +27,8 @@ beforeAll(async () => {
 // Cleanup after all tests - CRITICAL for preventing open handles
 afterAll(async () => {
   try {
+    console.log('✅ Test cleanup completed - MongoDB connections closed');
+    
     // Close all mongoose connections
     await mongoose.disconnect();
 
@@ -34,8 +36,9 @@ afterAll(async () => {
     if (mongoose.connection.readyState !== 0) {
       await mongoose.connection.close();
     }
-
-    console.log('✅ Test cleanup completed - MongoDB connections closed');
+    
+    // Add a small delay to allow cleanup
+    await new Promise(resolve => setTimeout(resolve, 500));
   } catch (error) {
     console.error('⚠️  Error during test cleanup:', error.message);
   }
@@ -44,14 +47,4 @@ afterAll(async () => {
 // Clean up after each test
 afterEach(() => {
   jest.clearAllMocks();
-});
-
-afterAll(async () => {
-  console.log('✅ Test cleanup completed - MongoDB connections closed');
-  
-  // Close all mongoose connections
-  await mongoose.disconnect();
-  
-  // Add a small delay to allow cleanup
-  await new Promise(resolve => setTimeout(resolve, 500));
 });
