@@ -45,3 +45,13 @@ afterAll(async () => {
 afterEach(() => {
   jest.clearAllMocks();
 });
+
+afterAll(async () => {
+  console.log('✅ Test cleanup completed - MongoDB connections closed');
+  
+  // Close all mongoose connections
+  await mongoose.disconnect();
+  
+  // Add a small delay to allow cleanup
+  await new Promise(resolve => setTimeout(resolve, 500));
+});

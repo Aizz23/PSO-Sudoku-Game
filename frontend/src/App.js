@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
-  Route,
-  Navigate,
-  useNavigate,
+  Route
 } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -73,3 +71,5 @@ function App() {
 }
 
 export default App;
+
+//  add Navigate and useNavigate if necessary, but make sure to import them from 'react-router-dom' AND CALL THEM
