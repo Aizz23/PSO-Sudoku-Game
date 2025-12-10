@@ -10,7 +10,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copy application code
-COPY . . 
+COPY . .
 
 # Build arguments - must be declared BEFORE they are used
 ARG REACT_APP_API_URL
