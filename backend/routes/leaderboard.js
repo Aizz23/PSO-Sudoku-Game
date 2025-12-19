@@ -77,7 +77,6 @@ router.get('/fastest-times', async (req, res) => {
       createdAt: game.createdAt
     }));
 
-
     res.status(200).json({
       success: true,
       count: formattedGames.length,
