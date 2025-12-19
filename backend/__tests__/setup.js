@@ -22,6 +22,9 @@ jest.setTimeout(30000);
 beforeAll(async () => {
   console.log('🧪 Test environment initialized');
   console.log(`📍 MongoDB URI: ${process.env.MONGODB_URI}`);
+
+  // Wait a bit for MongoDB to be ready
+  await new Promise(resolve => setTimeout(resolve, 1000));
 });
 
 // Cleanup after all tests - CRITICAL for preventing open handles

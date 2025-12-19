@@ -4,6 +4,11 @@
  */
 
 const request = require('supertest');
+
+jest.mock('../config/database', () => {
+  return jest.fn().mockResolvedValue(true);
+});
+
 const app = require('../server');
 
 describe('API Integration Tests', () => {
