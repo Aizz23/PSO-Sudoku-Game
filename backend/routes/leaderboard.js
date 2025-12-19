@@ -21,12 +21,22 @@ router.get('/top-scores', async (req, res) => {
       .sort({ score: -1, timeElapsed: 1 })
       .limit(parseInt(limit))
       .populate('user', 'username')
-      .select('username score timeElapsed difficulty createdAt');
+      .select('user score timeElapsed difficulty createdAt');
+
+    // Format response with username extracted
+    const formattedGames = topGames.map(game => ({
+      _id: game._id,
+      username: game.user?.username || 'Unknown',
+      score: game.score,
+      timeElapsed: game.timeElapsed,
+      difficulty: game.difficulty,
+      createdAt: game.createdAt
+    }));
 
     res.status(200).json({
       success: true,
-      count: topGames.length,
-      data: topGames,
+      count: formattedGames.length,
+      data: formattedGames,
     });
   } catch (error) {
     console.error('Error fetching leaderboard:', error);
@@ -55,12 +65,23 @@ router.get('/fastest-times', async (req, res) => {
       .sort({ timeElapsed: 1 })
       .limit(parseInt(limit))
       .populate('user', 'username')
-      .select('username score timeElapsed difficulty createdAt');
+      .select('user score timeElapsed difficulty createdAt');
+
+    // Format response with username extracted
+    const formattedGames = fastestGames.map(game => ({
+      _id: game._id,
+      username: game.user?.username || 'Unknown',
+      score: game.score,
+      timeElapsed: game.timeElapsed,
+      difficulty: game.difficulty,
+      createdAt: game.createdAt
+    }));
+
 
     res.status(200).json({
       success: true,
-      count: fastestGames.length,
-      data: fastestGames,
+      count: formattedGames.length,
+      data: formattedGames,
     });
   } catch (error) {
     console.error('Error fetching fastest times:', error);
