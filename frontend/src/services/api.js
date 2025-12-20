@@ -59,4 +59,20 @@ export const authAPI = {
   getUser: (userId) => api.get(`/auth/user/${userId}`),
 };
 
+// Leaderboard API
+export const leaderboardAPI = {
+  getTopScores: (difficulty = '', limit = 10) =>
+    api.get(`/leaderboard/top-scores?difficulty=${difficulty}&limit=${limit}`),
+
+  getFastestTimes: (difficulty = '', limit = 10) =>
+    api.get(
+      `/leaderboard/fastest-times?difficulty=${difficulty}&limit=${limit}`
+    ),
+
+  getTopPlayers: (limit = 10) =>
+    api.get(`/leaderboard/top-players?limit=${limit}`),
+
+  getStats: () => api.get('/leaderboard/stats'),
+};
+
 export default api;

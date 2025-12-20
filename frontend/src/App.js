@@ -12,6 +12,7 @@ import './App.css';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Game from './pages/Game';
+import Leaderboard from './pages/Leaderboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
@@ -51,6 +52,7 @@ function App() {
             path="/game"
             element={user ? <Game user={user} /> : <Navigate to="/login" />}
           />
+          <Route path="/leaderboard" element={<Leaderboard />} />
           <Route
             path="/login"
             element={
