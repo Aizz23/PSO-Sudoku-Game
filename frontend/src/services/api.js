@@ -27,52 +27,52 @@ api.interceptors.request.use(
 // Puzzle API
 export const puzzleAPI = {
   generate: (difficulty = 'medium') =>
-    api.get(`/puzzles/generate?difficulty=${difficulty}`),
+    api.get(`/api/puzzles/generate?difficulty=${difficulty}`),
 
-  validate: (board) => api.post('/puzzles/validate', { board }),
+  validate: (board) => api.post('/api/puzzles/validate', { board }),
 
-  solve: (board) => api.post('/puzzles/solve', { board }),
+  solve: (board) => api.post('/api/puzzles/solve', { board }),
 
   getHint: (puzzle, solution) =>
-    api.post('/puzzles/hint', { puzzle, solution }),
+    api.post('/api/puzzles/hint', { puzzle, solution }),
 };
 
 // Game API
 export const gameAPI = {
-  create: (gameData) => api.post('/games', gameData),
+  create: (gameData) => api.post('/api/games', gameData),
 
-  getById: (id) => api.get(`/games/${id}`),
+  getById: (id) => api.get(`/api/games/${id}`),
 
-  update: (id, updateData) => api.put(`/games/${id}`, updateData),
+  update: (id, updateData) => api.put(`/api/games/${id}`, updateData),
 
-  getUserGames: (userId) => api.get(`/games/user/${userId}`),
+  getUserGames: (userId) => api.get(`/api/games/user/${userId}`),
 
-  delete: (id) => api.delete(`/games/${id}`),
+  delete: (id) => api.delete(`/api/games/${id}`),
 };
 
 // Auth API
 export const authAPI = {
-  register: (userData) => api.post('/auth/register', userData),
+  register: (userData) => api.post('/api/auth/register', userData),
 
-  login: (credentials) => api.post('/auth/login', credentials),
+  login: (credentials) => api.post('/api/auth/login', credentials),
 
-  getUser: (userId) => api.get(`/auth/user/${userId}`),
+  getUser: (userId) => api.get(`/api/auth/user/${userId}`),
 };
 
 // Leaderboard API
 export const leaderboardAPI = {
   getTopScores: (difficulty = '', limit = 10) =>
-    api.get(`/leaderboard/top-scores?difficulty=${difficulty}&limit=${limit}`),
+    api.get(`/api/leaderboard/top-scores?difficulty=${difficulty}&limit=${limit}`),
 
   getFastestTimes: (difficulty = '', limit = 10) =>
     api.get(
-      `/leaderboard/fastest-times?difficulty=${difficulty}&limit=${limit}`
+      `/api/leaderboard/fastest-times?difficulty=${difficulty}&limit=${limit}`
     ),
 
   getTopPlayers: (limit = 10) =>
-    api.get(`/leaderboard/top-players?limit=${limit}`),
+    api.get(`/api/leaderboard/top-players?limit=${limit}`),
 
-  getStats: () => api.get('/leaderboard/stats'),
+  getStats: () => api.get('/api/leaderboard/stats'),
 };
 
 export default api;
