@@ -10,11 +10,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 import Navbar from './components/Navbar';
+import MusicPlayer from './components/MusicPlayer';
 import Home from './pages/Home';
 import Game from './pages/Game';
 import Leaderboard from './pages/Leaderboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import { MusicProvider } from './context/MusicContext';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -41,33 +43,36 @@ function App() {
   };
 
   return (
-    <Router>
-      <div className="App">
-        <Navbar user={user} onLogout={handleLogout} />
-        <ToastContainer position="top-right" autoClose={3000} />
+    <MusicProvider>
+      <Router>
+        <div className="App">
+          <Navbar user={user} onLogout={handleLogout} />
+          <MusicPlayer />
+          <ToastContainer position="top-right" autoClose={3000} />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/game"
-            element={user ? <Game user={user} /> : <Navigate to="/login" />}
-          />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route
-            path="/login"
-            element={
-              user ? <Navigate to="/" /> : <Login onLogin={handleLogin} />
-            }
-          />
-          <Route
-            path="/register"
-            element={
-              user ? <Navigate to="/" /> : <Register onLogin={handleLogin} />
-            }
-          />
-        </Routes>
-      </div>
-    </Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/game"
+              element={user ? <Game user={user} /> : <Navigate to="/login" />}
+            />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route
+              path="/login"
+              element={
+                user ? <Navigate to="/" /> : <Login onLogin={handleLogin} />
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                user ? <Navigate to="/" /> : <Register onLogin={handleLogin} />
+              }
+            />
+          </Routes>
+        </div>
+      </Router>
+    </MusicProvider>
   );
 }
 
