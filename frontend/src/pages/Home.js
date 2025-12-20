@@ -16,6 +16,9 @@ const Home = () => {
             <Link to="/game" className="btn btn-primary btn-large">
               Start Playing
             </Link>
+            <Link to="/leaderboard" className="btn btn-secondary btn-large">
+              View Leaderboard
+            </Link>
           </div>
         </div>
 
