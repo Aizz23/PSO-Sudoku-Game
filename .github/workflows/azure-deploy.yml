@@ -195,54 +195,12 @@ jobs:
         echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
 
   # ═══════════════════════════════════════════════════════
-  # STAGE 3: DEPLOYMENT TO AZURE
-  # ═══════════════════════════════════════════════════════
-
-  deploy-to-azure:
-    name: 🚀 Deploy to Azure Container Apps
-    needs: [build-backend, build-frontend]
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: 📥 Checkout code
-      uses: actions/checkout@v4
-    
-    - name: 🔐 Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-    
-    - name: 🚀 Deploy Backend
-      run: |
-        echo "🔄 Updating Backend Container App..."
-        az containerapp update \
-          --name sudoku-backend \
-          --resource-group sudoku-rg \
-          --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/sudoku-backend:latest
-    
-    - name: 🚀 Deploy Frontend
-      run: |
-        echo "🔄 Updating Frontend Container App..."
-        az containerapp update \
-          --name sudoku-frontend \
-          --resource-group sudoku-rg \
-          --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/sudoku-frontend:latest
-    
-    - name: ✅ Verify Deployment
-      run: |
-        echo "🔍 Checking Container App status..."
-        az containerapp show \
-          --name sudoku-frontend \
-          --resource-group sudoku-rg \
-          --query "properties.configuration.ingress.fqdn" -o tsv
-
-  # ═══════════════════════════════════════════════════════
-  # STAGE 4: DEPLOYMENT INFO
+  # STAGE 3: DEPLOYMENT INFO (Manual deployment required)
   # ═══════════════════════════════════════════════════════
 
   deployment-instructions:
     name: 🚀 Deployment Summary
-    needs: [build-backend, build-frontend, deploy-to-azure]
+    needs: [build-backend, build-frontend]
     runs-on: ubuntu-latest
     
     steps:
@@ -256,7 +214,12 @@ jobs:
         echo "✅ Stage 2: Docker Images Built & Pushed to ACR"
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "🚀 DEPLOYMENT COMMANDS:"
+        echo "� DOCKER IMAGES READY:"
+        echo "  Backend:  ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest"
+        echo "  Frontend: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🚀 TO DEPLOY: Run deployment script manually"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
         echo "# Option 1: Deploy All (Backend + Frontend)"
@@ -268,17 +231,11 @@ jobs:
         echo ""
         echo "# Option 3: Manual Azure CLI"
         echo "az containerapp update \\"
-        echo "  --name ${{ secrets.AZURE_CONTAINER_APP_BACKEND }} \\"
-        echo "  --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \\"
-        echo "  --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest"
+        echo "  --name sudoku-backend \\"
+        echo "  --resource-group sudoku-rg \\"
+        echo "  --image sudokustrupwa.azurecr.io/sudoku-backend:latest"
         echo ""
         echo "az containerapp update \\"
-        echo "  --name ${{ secrets.AZURE_CONTAINER_APP_FRONTEND }} \\"
-        echo "  --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \\"
-        echo "  --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
-        echo ""
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "📦 Images Available:"
-        echo "  Backend:  ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest"
-        echo "  Frontend: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "  --name sudoku-frontend \\"
+        echo "  --resource-group sudoku-rg \\"
+        echo "  --image sudokustrupwa.azurecr.io/sudoku-frontend:latest"
