@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { leaderboardAPI } from '../services/api';
 import './Leaderboard.css';
 
@@ -10,11 +10,7 @@ const Leaderboard = () => {
   const [loading, setLoading] = useState(false);
 
   // Fetch data based on active tab
-  useEffect(() => {
-    fetchData();
-  }, [activeTab, difficulty]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -37,7 +33,11 @@ const Leaderboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab, difficulty]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
