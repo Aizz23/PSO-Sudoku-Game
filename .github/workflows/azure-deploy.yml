@@ -168,6 +168,8 @@ jobs:
       with:
         context: ./frontend
         push: true
+        build-args: |
+          REACT_APP_API_URL=https://sudoku-backend.agreeableforest-82817a2d.southeastasia.azurecontainerapps.io
         tags: |
           ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }}
           ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
