@@ -195,12 +195,60 @@ jobs:
         echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
 
   # ═══════════════════════════════════════════════════════
-  # STAGE 3: DEPLOYMENT INFO (Manual deployment required)
+  # STAGE 3: AUTO DEPLOYMENT TO AZURE
+  # ═══════════════════════════════════════════════════════
+
+  deploy-to-azure:
+    name: 🚀 Deploy to Azure Container Apps
+    runs-on: ubuntu-latest
+    needs: [build-backend, build-frontend]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 🔐 Azure Login with Service Principal
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        allow-no-subscriptions: false
+    
+    - name: 🚀 Deploy Backend Image
+      run: |
+        echo "🔄 Updating Backend Container App with latest image..."
+        az containerapp update \
+          --name sudoku-backend \
+          --resource-group sudoku-rg \
+          --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest \
+          --registry-username ${{ secrets.ACR_USERNAME }} \
+          --registry-password ${{ secrets.ACR_PASSWORD }}
+    
+    - name: 🚀 Deploy Frontend Image
+      run: |
+        echo "🔄 Updating Frontend Container App with latest image..."
+        az containerapp update \
+          --name sudoku-frontend \
+          --resource-group sudoku-rg \
+          --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest \
+          --registry-username ${{ secrets.ACR_USERNAME }} \
+          --registry-password ${{ secrets.ACR_PASSWORD }}
+    
+    - name: ✅ Verify Frontend Deployment
+      run: |
+        echo "🔍 Verifying deployment..."
+        FRONTEND_URL=$(az containerapp show \
+          --name sudoku-frontend \
+          --resource-group sudoku-rg \
+          --query "properties.configuration.ingress.fqdn" -o tsv)
+        echo "✅ Frontend deployed at: https://$FRONTEND_URL"
+
+  # ═══════════════════════════════════════════════════════
+  # STAGE 4: DEPLOYMENT SUMMARY
   # ═══════════════════════════════════════════════════════
 
   deployment-instructions:
-    name: 🚀 Deployment Summary
-    needs: [build-backend, build-frontend]
+    name: 🎉 Pipeline Complete
+    needs: [build-backend, build-frontend, deploy-to-azure]
     runs-on: ubuntu-latest
     
     steps:
