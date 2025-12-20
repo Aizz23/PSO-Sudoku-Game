@@ -12,6 +12,8 @@ env:
   AZURE_RESOURCE_GROUP: sudoku-rg
   BACKEND_IMAGE_NAME: sudoku-backend
   FRONTEND_IMAGE_NAME: sudoku-frontend
+  BACKEND_APP_NAME: sudoku-backend
+  FRONTEND_APP_NAME: sudoku-frontend
   NODE_VERSION: '20'
   
 jobs:
@@ -195,7 +197,7 @@ jobs:
         echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
 
   # ═══════════════════════════════════════════════════════
-  # STAGE 3: DEPLOYMENT SUMMARY
+  # STAGE 3: DEPLOYMENT INSTRUCTIONS
   # ═══════════════════════════════════════════════════════
 
   deployment-summary:
@@ -214,12 +216,12 @@ jobs:
         echo "✅ Stage 2: Docker Images Built & Pushed to ACR"
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "� DOCKER IMAGES READY:"
+        echo "📦 DOCKER IMAGES READY:"
         echo "  Backend:  ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:latest"
         echo "  Frontend: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "🚀 TO DEPLOY: Run deployment script manually"
+        echo "🚀 NEXT STEP: Deploy to Azure (Manual)"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
         echo "# Option 1: Deploy All (Backend + Frontend)"

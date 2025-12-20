@@ -7,7 +7,7 @@ const Home = () => {
     <div className="home-page">
       <div className="container">
         <div className="hero-section">
-          <h1 className="hero-title">Welcome to Sudoku Game 🎮</h1>
+          <h1 className="hero-title">Welcome to Sudoku Game</h1>
           <p className="hero-subtitle">
             Challenge your mind with puzzles of varying difficulty levels
           </p>
