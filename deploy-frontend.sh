@@ -8,12 +8,21 @@ RESOURCE_GROUP="sudoku-rg"
 CONTAINER_APP_NAME="sudoku-frontend"
 ACR_NAME="sudokustrupwa"
 IMAGE_NAME="sudoku-frontend"
-TAG="${1:-latest}"
+
+# Determine which tag to use
+# Usage: ./deploy-frontend.sh [tag]
+if [ -n "$1" ]; then
+  TAG="$1"
+  echo "📦 Using provided tag: $TAG"
+else
+  TAG=$(git rev-parse HEAD)
+  echo "📦 Using current commit SHA: $TAG"
+fi
 
 FULL_IMAGE="${ACR_NAME}.azurecr.io/${IMAGE_NAME}:${TAG}"
 
-echo "📦 Image: ${FULL_IMAGE}"
 echo "🎯 Target: ${CONTAINER_APP_NAME}"
+echo "📦 Image: ${FULL_IMAGE}"
 echo ""
 
 # Update container app
