@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// eslint-disable-next-line no-undef
+const API_URL = window.ENV?.REACT_APP_API_URL || process.env.REACT_APP_API_URL || 'https://sudoku-backend.agreeableforest-82817a2d.southeastasia.azurecontainerapps.io';
 
 const api = axios.create({
   baseURL: API_URL,

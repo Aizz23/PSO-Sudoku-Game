@@ -30,8 +30,8 @@ az containerapp update \
   --image ${ACR_LOGIN_SERVER}/sudoku-frontend:latest
 
 # Get URLs
-BACKEND_URL=$(az containerapp show --name $BACKEND_APP --resource-group $RESOURCE_GROUP --query properties.configuration.ingress. fqdn -o tsv)
-FRONTEND_URL=$(az containerapp show --name $FRONTEND_APP --resource-group $RESOURCE_GROUP --query properties.configuration. ingress.fqdn -o tsv)
+BACKEND_URL=$(az containerapp show --name $BACKEND_APP --resource-group $RESOURCE_GROUP --query properties.configuration.ingress.fqdn -o tsv)
+FRONTEND_URL=$(az containerapp show --name $FRONTEND_APP --resource-group $RESOURCE_GROUP --query properties.configuration.ingress.fqdn -o tsv)
 
 echo ""
 echo "✅ Deployment complete!"

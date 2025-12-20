@@ -12,31 +12,31 @@ const Leaderboard = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        if (activeTab === 'topScores') {
+          const response = await leaderboardAPI.getTopScores(difficulty, 20);
+          setTopScores(response.data.data);
+        } else if (activeTab === 'fastestTimes') {
+          const response = await leaderboardAPI.getFastestTimes(difficulty, 20);
+          setFastestTimes(response.data.data);
+        } else if (activeTab === 'topPlayers') {
+          const response = await leaderboardAPI.getTopPlayers(20);
+          setTopPlayers(response.data.data);
+        } else if (activeTab === 'stats') {
+          const response = await leaderboardAPI.getStats();
+          setStats(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching leaderboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchData();
   }, [activeTab, difficulty]);
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      if (activeTab === 'topScores') {
-        const response = await leaderboardAPI.getTopScores(difficulty, 20);
-        setTopScores(response.data.data);
-      } else if (activeTab === 'fastestTimes') {
-        const response = await leaderboardAPI.getFastestTimes(difficulty, 20);
-        setFastestTimes(response.data.data);
-      } else if (activeTab === 'topPlayers') {
-        const response = await leaderboardAPI.getTopPlayers(20);
-        setTopPlayers(response.data.data);
-      } else if (activeTab === 'stats') {
-        const response = await leaderboardAPI.getStats();
-        setStats(response.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching leaderboard data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
