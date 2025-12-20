@@ -24,7 +24,9 @@ const Navbar = ({ user, onLogout }) => {
           <Link to="/game" className="navbar-link">
             Play
           </Link>
-
+          <Link to="/leaderboard" className="navbar-link">
+            Leaderboard
+          </Link>
 
           {user ? (
             <>
