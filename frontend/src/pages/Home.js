@@ -16,9 +16,6 @@ const Home = () => {
             <Link to="/game" className="btn btn-primary btn-large">
               Start Playing
             </Link>
-            <Link to="/leaderboard" className="btn btn-secondary btn-large">
-              View Leaderboard
-            </Link>
           </div>
         </div>
 
@@ -43,11 +40,6 @@ const Home = () => {
               <p>Get help when you're stuck with our hint system</p>
             </div>
 
-            <div className="feature-card">
-              <div className="feature-icon">🏆</div>
-              <h3>Leaderboard</h3>
-              <p>Compete with other players and climb the rankings</p>
-            </div>
           </div>
         </div>
 
