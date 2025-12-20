@@ -12,6 +12,8 @@ env:
   AZURE_RESOURCE_GROUP: sudoku-rg
   BACKEND_IMAGE_NAME: sudoku-backend
   FRONTEND_IMAGE_NAME: sudoku-frontend
+  BACKEND_APP_NAME: sudoku-backend
+  FRONTEND_APP_NAME: sudoku-frontend
   NODE_VERSION: '20'
   
 jobs:
@@ -195,7 +197,53 @@ jobs:
         echo "  - ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
 
   # ═══════════════════════════════════════════════════════
-  # STAGE 3: DEPLOYMENT INFO
+  # STAGE 3: AUTO-DEPLOYMENT (NEW!)
+  # ═══════════════════════════════════════════════════════
+
+  deploy-to-azure:
+    name: 🚀 Deploy to Azure
+    needs: [build-backend, build-frontend]
+    runs-on:  ubuntu-latest
+    if: github.event_name == 'push' && github. ref == 'refs/heads/main'
+
+    steps:
+    - name: 🔐 Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: 🔄 Deploy Backend
+      run: |
+        echo "🔄 Deploying Backend..."
+        az containerapp update \
+          --name ${{ env.BACKEND_APP_NAME }} \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --image ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }}
+        
+        echo "✅ Backend deployed!"
+
+    - name: 🔄 Deploy Frontend
+      run:  |
+        echo "🔄 Deploying Frontend..."
+        az containerapp update \
+          --name ${{ env.FRONTEND_APP_NAME }} \
+          --resource-group ${{ env. AZURE_RESOURCE_GROUP }} \
+          --image ${{ env. AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }}
+        
+        echo "✅ Frontend deployed!"
+
+    - name: 🎉 Deployment Complete
+      run: |
+        echo "╔════════════════════════════════════════════════════════╗"
+        echo "║  🎉 DEPLOYMENT COMPLETED SUCCESSFULLY!                ║"
+        echo "╚════════════════════════════════════════════════════════╝"
+        echo ""
+        echo "📦 Deployed Images:"
+        echo "  Backend:  ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }}"
+        echo "  Frontend: ${{ env.AZURE_REGISTRY_LOGIN_SERVER }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }}"
+
+  # ═══════════════════════════════════════════════════════
+  # STAGE 4: DEPLOYMENT INFO
   # ═══════════════════════════════════════════════════════
 
   deployment-instructions:
