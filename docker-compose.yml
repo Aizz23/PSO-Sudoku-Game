@@ -10,7 +10,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: sudoku123
       MONGO_INITDB_DATABASE: sudoku-game
     ports:
-      - "27017:27017"
+      - "27018:27017"  # Changed to 27018 to avoid conflict with local MongoDB
     volumes:
       - mongodb_data:/data/db
     networks:
